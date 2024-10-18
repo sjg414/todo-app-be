@@ -18,11 +18,4 @@ const taskSchema = Schema(
 
 const Task = mongoose.model("Task", taskSchema);
 
-const newTask = new Task({
-  task: "운동하기",
-  isComplete: false,
-});
-
-newTask.save().then((value) => console.log("value is", value));
-
 module.exports = Task;
