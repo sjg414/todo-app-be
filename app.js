@@ -14,7 +14,7 @@ const mongoURI = MONGODB_URI_PROD;
 
 //mongoose setting
 mongoose
-  .connect(mongoURI, { useNewUrlParser: true })
+  .connect(mongoURI)
   .then(() => {
     console.log("mongoose connected");
   })
