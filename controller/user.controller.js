@@ -7,15 +7,15 @@ const userController = {};
 //회원가입
 userController.createUser = async (req, res) => {
   try {
-    const { name, DOB, email, password } = req.body; //FE에서 보낸 data
-    const findUser = await User.findOne({ name, DOB }); //중복가입 확인을 위해 이름과 생년월일로 검색
+    const { name, email, password } = req.body; //FE에서 보낸 data
+    const findUser = await User.findOne({ email }); //중복가입 확인을 위해 email로 검색
     if (findUser) {
       //중복가입일 경우
       throw new Error(console.log("이미 가입이 된 유저입니다."));
     } else {
       const salt = bcrypt.genSaltSync(saltRounds); //비밀번호 암호화를 위한 키
       const hash = bcrypt.hashSync(password, salt); //비밀번호 암호화
-      const newUser = new User({ name, DOB, email, password: hash }); //새로운 유저 생성(회원가입)
+      const newUser = new User({ name, email, password: hash }); //새로운 유저 생성(회원가입)
       await newUser.save(); //유저정보 DB에 저장
       res.status(200).json({ status: "success" });
     }

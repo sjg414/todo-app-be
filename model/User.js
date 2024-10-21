@@ -10,10 +10,6 @@ const userSchema = Schema(
       type: String,
       required: true,
     },
-    DOB: {
-      type: String,
-      required: true,
-    },
     email: {
       type: String,
       required: true,
@@ -25,6 +21,7 @@ const userSchema = Schema(
   },
   { timestamps: true }
 );
+//BE에서 FE로 data를 보낼 떄 항상 호출된다.
 userSchema.methods.toJSON = function () {
   const obj = this._doc;
   delete obj.password;
