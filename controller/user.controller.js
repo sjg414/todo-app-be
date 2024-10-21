@@ -8,10 +8,10 @@ const userController = {};
 userController.createUser = async (req, res) => {
   try {
     const { name, email, password } = req.body; //FE에서 보낸 data
-    const findUser = await User.findOne({ email }); //중복가입 확인을 위해 email로 검색
-    if (findUser) {
+    const user = await User.findOne({ email }); //중복가입 확인을 위해 email로 검색
+    if (user) {
       //중복가입일 경우
-      throw new Error(console.log("이미 가입이 된 유저입니다."));
+      throw new Error("이미 가입이 된 유저입니다.");
     } else {
       const salt = bcrypt.genSaltSync(saltRounds); //비밀번호 암호화를 위한 키
       const hash = bcrypt.hashSync(password, salt); //비밀번호 암호화
@@ -20,7 +20,7 @@ userController.createUser = async (req, res) => {
       res.status(200).json({ status: "success" });
     }
   } catch (err) {
-    res.status(400).json({ status: "fail", error: console.log(err) });
+    res.status(400).json({ status: "fail", error: err.message });
   }
 };
 
@@ -28,17 +28,14 @@ userController.createUser = async (req, res) => {
 userController.loginWithEmail = async (req, res) => {
   try {
     const { email, password } = req.body; //FE에서 보낸 user정보
-    const findUser = await User.findOne(
-      { email },
-      "-createdAt -updatedAt -__v"
-    ); //email로 검색
-    if (findUser) {
+    const user = await User.findOne({ email }, "-createdAt -updatedAt -__v"); //email로 검색
+    if (user) {
       //해당 유저가 있을 경우
-      const isMatch = bcrypt.compareSync(password, findUser.password); //암호화 된 비밀번호와 비교
+      const isMatch = bcrypt.compareSync(password, user.password); //암호화 된 비밀번호와 비교
       if (isMatch) {
         //비밀번호 일치 시
-        const token = findUser.generateToken(); //토큰생성
-        res.status(200).json({ status: "success", findUser, token });
+        const token = user.generateToken(); //토큰생성
+        res.status(200).json({ status: "success", user, token });
       } else {
         //비밀번호가 일치하지 않을 경우
         throw new Error("비밀번호가 틀렸습니다.");
@@ -48,7 +45,7 @@ userController.loginWithEmail = async (req, res) => {
       throw new Error("email이 틀렸습니다.");
     }
   } catch (err) {
-    res.status(400).json({ status: "fail", error: console.log(err) });
+    res.status(400).json({ status: "fail", message: err.message });
   }
 };
 
