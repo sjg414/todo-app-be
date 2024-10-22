@@ -12,15 +12,14 @@ userController.createUser = async (req, res) => {
     if (user) {
       //중복가입일 경우
       throw new Error("이미 가입이 된 유저입니다.");
-    } else {
-      const salt = bcrypt.genSaltSync(saltRounds); //비밀번호 암호화를 위한 키
-      const hash = bcrypt.hashSync(password, salt); //비밀번호 암호화
-      const newUser = new User({ name, email, password: hash }); //새로운 유저 생성(회원가입)
-      await newUser.save(); //유저정보 DB에 저장
-      res.status(200).json({ status: "success" });
     }
+    const salt = bcrypt.genSaltSync(saltRounds); //비밀번호 암호화를 위한 키
+    const hash = bcrypt.hashSync(password, salt); //비밀번호 암호화
+    const newUser = new User({ name, email, password: hash }); //새로운 유저 생성(회원가입)
+    await newUser.save(); //유저정보 DB에 저장
+    res.status(200).json({ status: "success" });
   } catch (err) {
-    res.status(400).json({ status: "fail", error: err.message });
+    res.status(400).json({ status: "fail", message: err.message });
   }
 };
 
