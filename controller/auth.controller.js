@@ -7,7 +7,7 @@ const authController = {};
 //토큰 확인
 authController.authenticate = (req, res, next) => {
   try {
-    const tokenString = req.headers.authoriztion;
+    const tokenString = req.headers.authorization;
     if (!tokenString) {
       throw new Error("invalid token");
     }

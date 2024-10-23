@@ -6,7 +6,8 @@ const taskController = {};
 taskController.createTask = async (req, res) => {
   try {
     const { task, isComplete } = req.body; //filed 값 가져오기
-    const newTask = new Task({ task, isComplete }); //새로운 모델 추가
+    const { userId } = req;
+    const newTask = new Task({ task, isComplete, author: userId }); //새로운 모델 추가
     await newTask.save(); //저장
     res.status(200).json({ status: "ok", data: newTask }); //성공 시
   } catch (err) {
@@ -17,7 +18,10 @@ taskController.createTask = async (req, res) => {
 //등록된 할 일 목록 나타내기
 taskController.getTask = async (req, res) => {
   try {
-    const taskList = await Task.find({}).select("-__v"); //모든 데이터 검색하기(__v필드 제외)
+    const { userId } = req;
+    const taskList = await Task.find({ author: userId })
+      .select("-__v")
+      .populate("author"); //해당 user의 모든 데이터 검색하기 select:(__v필드 제외) populate: 외래키 join-like
     res.status(200).json({ status: "ok", data: taskList }); //성공 시
   } catch (err) {
     res.status(400).json({ status: "fail", error: err }); //실패 시

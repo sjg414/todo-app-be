@@ -12,6 +12,11 @@ const taskSchema = Schema(
       type: Boolean,
       require: true,
     },
+    author: {
+      type: Schema.Types.ObjectId,
+      require: true,
+      ref: "User", //외래키
+    },
   },
   { timestamps: true }
 );
